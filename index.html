@@ -3,67 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FC사나이 팀 밸런서 (FM 에디션)</title>
+    <title>FC사나이 팀선택</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #334155;
+            --bg-deep: #090d16;
+            --bg-card: #131b2e;
+            --bg-item: #1c273e;
+            --bg-input: #23314e;
+            --border: rgba(255, 255, 255, 0.08);
             --primary: #38bdf8;
             --accent: #f59e0b;
             --danger: #ef4444;
-            --stat-high: #22c55e;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-light); padding: 14px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 14px; }
-        h1 { font-size: 1.4rem; text-align: center; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .card { background: var(--bg-card); border-radius: 12px; padding: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-        .card-header { font-size: 0.95rem; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--primary); }
-        
-        .tabs { display: flex; gap: 8px; }
-        .tab-btn { flex: 1; padding: 10px; background: var(--bg-card); border: 1px solid var(--bg-input); color: var(--text-muted); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-        .tab-btn.active { background: var(--primary); color: #0f172a; border-color: var(--primary); }
 
-        .player-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-        .player-item { background: var(--bg-input); padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; }
-        .player-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .ovr-badge { background: var(--accent); color: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; }
-        
-        .stat-bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; font-size: 0.75rem; text-align: center; }
-        .stat-pill { background: rgba(0,0,0,0.25); border-radius: 4px; padding: 3px 2px; }
-        .stat-val { font-weight: bold; color: var(--primary); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", Roboto, sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-        .attendance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-        .attendance-item { display: flex; align-items: center; justify-content: space-between; padding: 8px; background: var(--bg-input); border-radius: 6px; cursor: pointer; user-select: none; font-size: 0.85rem; }
-        .attendance-item.checked { background: rgba(56, 189, 248, 0.2); border: 1px solid var(--primary); }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            padding: 14px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-        /* 입력 폼 */
-        .stat-input-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0; }
-        .stat-input-col { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: var(--text-muted); }
-        .stat-input-col input { width: 100%; text-align: center; padding: 6px 0; }
+        .app-container {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        input, select { background: var(--bg-input); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 6px; font-size: 0.85rem; }
-        button.action-btn { background: var(--primary); color: #0f172a; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 0.95rem; }
-        button.sub-btn { background: transparent; border: 1px solid var(--bg-input); color: var(--text-muted); padding: 5px 9px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--primary);
+            padding: 6px 0;
+        }
 
-        .match-teams { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-        .team-box { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 10px; border-left: 4px solid var(--primary); }
-        .team-title { font-weight: bold; display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; }
-        .team-members { display: flex; flex-wrap: wrap; gap: 6px; }
-        .member-badge { background: var(--bg-input); padding: 5px 8px; border-radius: 4px; font-size: 0.8rem; }
+        /* 탭 버튼 */
+        .tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #040914;
+            border-color: var(--primary);
+        }
+
+        /* 카드 공통 */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        /* 참석자 리스트 */
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+            gap: 6px;
+        }
+
+        .attendance-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-item);
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.82rem;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .attendance-item.checked {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .style-tag {
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .style-공격적 { color: #f87171; background: rgba(239, 68, 68, 0.15); }
+        .style-밸런스 { color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
+        .style-수비적 { color: #4ade80; background: rgba(34, 197, 94, 0.15); }
+
+        /* 로스터 리스트 (폰트 벌어짐 방지) */
+        .roster-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .roster-item {
+            background: var(--bg-item);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .roster-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .roster-name-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .ovr-pill {
+            background: var(--accent);
+            color: #050811;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .stat-columns {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.72rem;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            padding: 3px 0;
+            color: var(--text-sub);
+        }
+
+        .stat-box b {
+            display: block;
+            color: var(--primary);
+            font-size: 0.78rem;
+            margin-top: 1px;
+        }
+
+        /* 폼 요소 */
+        .input-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .stat-input-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .stat-input-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.72rem;
+            color: var(--text-sub);
+        }
+
+        .stat-input-item input {
+            width: 100%;
+            text-align: center;
+            padding: 6px 0;
+        }
+
+        /* 버튼 */
+        .action-btn {
+            background: var(--primary);
+            color: #040914;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: opacity 0.15s;
+        }
+
+        .action-btn:active {
+            opacity: 0.85;
+        }
+
+        .sub-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+
+        /* 매치 결과 렌더 */
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .team-block {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 10px;
+            border-left: 3px solid var(--primary);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .team-title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .member-badge {
+            background: var(--bg-item);
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <h1>⚽ FC사나이 FM 밸런서 ⚽</h1>
+    <h1>FC사나이 팀선택</h1>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('match')">매치 편성</button>
-        <button class="tab-btn" onclick="switchTab('roster')">FM 21인 명단</button>
+        <button class="tab-btn" onclick="switchTab('roster')">선수 명단 (21인)</button>
     </div>
 
     <!-- 탭 1: 매치 편성 -->
@@ -81,74 +336,72 @@
 
         <div class="card" style="margin-top: 12px;">
             <div class="card-header">
-                <span>2. 팀 편성 옵션</span>
+                <span>2. 매치 설정</span>
             </div>
-            <div style="display:flex; gap:8px; align-items:center; margin-bottom: 12px;">
-                <label style="font-size: 0.85rem;">팀 개수:</label>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom: 10px;">
+                <label style="font-size: 0.82rem; color: var(--text-sub);">팀 분할:</label>
                 <select id="team-count" style="flex:1;">
                     <option value="2">2개 팀 (12인 매치)</option>
                     <option value="3">3개 팀 (18인 매치)</option>
                 </select>
             </div>
-            <button class="action-btn" onclick="generateTeams()">FM 밸런스 매칭 실행</button>
+            <button class="action-btn" onclick="generateTeams()">밸런스 매칭 실행</button>
         </div>
 
         <div class="card" id="result-card" style="display:none; margin-top: 12px;">
             <div class="card-header">
-                <span>최적 편성 결과</span>
-                <button class="sub-btn" onclick="copyResult()">결과 복사</button>
+                <span>편성 결과</span>
+                <button class="sub-btn" onclick="copyResult()">카톡 결과 복사</button>
             </div>
             <div id="match-teams" class="match-teams"></div>
             <button class="action-btn" style="margin-top:12px; background:var(--accent);" onclick="confirmMatch()">이 팀 조합 확정 (히스토리 누적)</button>
         </div>
     </div>
 
-    <!-- 탭 2: FM 선수 관리 -->
+    <!-- 탭 2: 로스터 관리 -->
     <div id="tab-roster" style="display:none;">
         <div class="card">
-            <div class="card-header">선수 등록 (FM 능력치 1~10점)</div>
-            <div style="display:flex; gap:6px;">
-                <input type="text" id="new-name" placeholder="이름" style="flex:1;">
-                <select id="new-pos">
-                    <option value="FW">공격(FW)</option>
-                    <option value="MF" selected>미드(MF)</option>
-                    <option value="DF">수비(DF)</option>
-                    <option value="GK">골키퍼(GK)</option>
+            <div class="card-header">선수 등록 (풋살 성향 & FM 능력치 1~10)</div>
+            <div class="input-group">
+                <input type="text" id="new-name" placeholder="선수 이름" style="flex:1;">
+                <select id="new-style">
+                    <option value="공격적">공격적</option>
+                    <option value="밸런스" selected>밸런스</option>
+                    <option value="수비적">수비적</option>
                 </select>
             </div>
-            
+
             <div class="stat-input-row">
-                <div class="stat-input-col"><span>슈팅</span><input type="number" id="stat-sht" min="1" max="10" value="6"></div>
-                <div class="stat-input-col"><span>패스</span><input type="number" id="stat-pas" min="1" max="10" value="6"></div>
-                <div class="stat-input-col"><span>드리블</span><input type="number" id="stat-dri" min="1" max="10" value="6"></div>
-                <div class="stat-input-col"><span>수비</span><input type="number" id="stat-def" min="1" max="10" value="6"></div>
-                <div class="stat-input-col"><span>체력</span><input type="number" id="stat-sta" min="1" max="10" value="6"></div>
+                <div class="stat-input-item"><span>슈팅</span><input type="number" id="stat-sht" min="1" max="10" value="6"></div>
+                <div class="stat-input-item"><span>패스</span><input type="number" id="stat-pas" min="1" max="10" value="6"></div>
+                <div class="stat-input-item"><span>드리블</span><input type="number" id="stat-dri" min="1" max="10" value="6"></div>
+                <div class="stat-input-item"><span>수비</span><input type="number" id="stat-def" min="1" max="10" value="6"></div>
+                <div class="stat-input-item"><span>체력</span><input type="number" id="stat-sta" min="1" max="10" value="6"></div>
             </div>
 
-            <button class="action-btn" style="padding:8px;" onclick="addPlayer()">선수 추가 / 등록</button>
-            
+            <button class="action-btn" onclick="addPlayer()">선수 추가</button>
+
             <div style="display:flex; gap:6px; margin-top:10px;">
-                <button class="sub-btn" style="flex:1;" onclick="loadFMDefault21()">FM 21명 기본데이터 채우기</button>
+                <button class="sub-btn" style="flex:1;" onclick="loadDefault21()">21명 기본데이터 복구</button>
                 <button class="sub-btn" style="color:var(--danger);" onclick="resetHistory()">매칭 히스토리 초기화</button>
             </div>
         </div>
 
         <div class="card" style="margin-top: 12px;">
-            <div class="card-header">등록된 선수 로스터 (<span id="total-player-count">0</span>/21)</div>
-            <div class="player-grid" id="roster-list"></div>
+            <div class="card-header">등록된 선수 명단 (<span id="total-player-count">0</span>/21)</div>
+            <div class="roster-grid" id="roster-list"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const STORAGE_KEY_PLAYERS = 'fcsanai_fm_players';
-    const STORAGE_KEY_HISTORY = 'fcsanai_team_history';
+    const STORAGE_KEY_PLAYERS = 'fcsanai_futsal_players_v2';
+    const STORAGE_KEY_HISTORY = 'fcsanai_team_history_v2';
 
     let players = JSON.parse(localStorage.getItem(STORAGE_KEY_PLAYERS)) || [];
     let historyMatrix = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || {};
     let currentGeneratedTeams = [];
 
-    // OVR 계산 공식 (5개 능력치 평균)
     function calcOVR(stats) {
         const sum = (stats.sht || 5) + (stats.pas || 5) + (stats.dri || 5) + (stats.def || 5) + (stats.sta || 5);
         return (sum / 5).toFixed(1);
@@ -172,17 +425,16 @@
         });
     }
 
-    // FM 스타일 21명 기본 명단 생성
-    function loadFMDefault21() {
-        if (!confirm('21명 기본 FM 샘플 데이터로 교체하시겠습니까?')) return;
-        const positions = ['FW', 'MF', 'MF', 'DF', 'DF', 'GK', 'MF'];
+    function loadDefault21() {
+        if (!confirm('21명 기본 풋살 데이터로 초기화하시겠습니까?')) return;
+        const styles = ['공격적', '밸런스', '수비적'];
         players = [];
         for (let i = 1; i <= 21; i++) {
-            const base = ((i % 5) + 4); // 4~8점대 기본
+            const base = ((i % 5) + 4);
             players.push({
                 id: 'p_' + i,
                 name: '선수 ' + i,
-                pos: positions[(i - 1) % positions.length],
+                style: styles[(i - 1) % styles.length],
                 stats: {
                     sht: Math.min(10, Math.max(1, base + ((i % 3) - 1))),
                     pas: Math.min(10, Math.max(1, base + ((i % 2)))),
@@ -197,7 +449,8 @@
     }
 
     function addPlayer() {
-        const name = document.getElementById('new-name').value.trim();
+        const nameInput = document.getElementById('new-name');
+        const name = nameInput.value.trim();
         if (!name) return alert('이름을 입력해주세요.');
 
         const stats = {
@@ -211,12 +464,12 @@
         players.push({
             id: 'p_' + Date.now(),
             name: name,
-            pos: document.getElementById('new-pos').value,
+            style: document.getElementById('new-style').value,
             stats: stats,
             checked: true
         });
 
-        document.getElementById('new-name').value = '';
+        nameInput.value = '';
         savePlayers();
     }
 
@@ -231,20 +484,23 @@
         list.innerHTML = players.map(p => {
             const ovr = calcOVR(p.stats);
             return `
-                <div class="player-item">
-                    <div class="player-header">
-                        <span>${p.name} <small style="color:var(--text-muted);">(${p.pos})</small></span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span class="ovr-badge">OVR ${ovr}</span>
-                            <button class="sub-btn" style="color:var(--danger); padding:2px 6px;" onclick="removePlayer('${p.id}')">삭제</button>
+                <div class="roster-item">
+                    <div class="roster-header">
+                        <div class="roster-name-box">
+                            <span>${p.name}</span>
+                            <span class="style-tag style-${p.style}">${p.style}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span class="ovr-pill">OVR ${ovr}</span>
+                            <button class="sub-btn" style="color:var(--danger);" onclick="removePlayer('${p.id}')">삭제</button>
                         </div>
                     </div>
-                    <div class="stat-bars">
-                        <div class="stat-pill">슈팅 <span class="stat-val">${p.stats.sht}</span></div>
-                        <div class="stat-pill">패스 <span class="stat-val">${p.stats.pas}</span></div>
-                        <div class="stat-pill">드리블 <span class="stat-val">${p.stats.dri}</span></div>
-                        <div class="stat-pill">수비 <span class="stat-val">${p.stats.def}</span></div>
-                        <div class="stat-pill">체력 <span class="stat-val">${p.stats.sta}</span></div>
+                    <div class="stat-columns">
+                        <div class="stat-box">슈팅<b>${p.stats.sht}</b></div>
+                        <div class="stat-box">패스<b>${p.stats.pas}</b></div>
+                        <div class="stat-box">드리블<b>${p.stats.dri}</b></div>
+                        <div class="stat-box">수비<b>${p.stats.def}</b></div>
+                        <div class="stat-box">체력<b>${p.stats.sta}</b></div>
                     </div>
                 </div>
             `;
@@ -260,7 +516,10 @@
             return `
                 <div class="attendance-item ${p.checked ? 'checked' : ''}" onclick="toggleAttendance('${p.id}')">
                     <span>${p.name}</span>
-                    <span style="font-weight:bold; color:var(--primary); font-size:0.75rem;">${ovr}</span>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <span class="style-tag style-${p.style}" style="font-size:0.65rem; padding:1px 3px;">${p.style[0]}</span>
+                        <b style="color:var(--primary); font-size:0.75rem;">${ovr}</b>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -288,7 +547,7 @@
         historyMatrix[key] = (historyMatrix[key] || 0) + 1;
     }
 
-    // 팀 편성 알고리즘 (FM 종합 OVR + 과거 2회 중복 배제)
+    // 밸런스 매칭 (OVR 차이 최소화 + 스타일 균등 분배 + 2회 이상 중복 배제)
     function generateTeams() {
         const attendees = players.filter(p => p.checked);
         const k = parseInt(document.getElementById('team-count').value);
@@ -308,17 +567,21 @@
             });
 
             let cost = 0;
+
+            // 1. OVR 균형 페널티
             const teamOVRs = teams.map(t => {
                 const total = t.reduce((sum, p) => sum + parseFloat(calcOVR(p.stats)), 0);
                 return total / t.length;
             });
+            cost += (Math.max(...teamOVRs) - Math.min(...teamOVRs)) * 50;
 
-            // 1. 팀 평균 OVR 격차 최소화
-            const maxOVR = Math.max(...teamOVRs);
-            const minOVR = Math.min(...teamOVRs);
-            cost += (maxOVR - minOVR) * 40;
+            // 2. 공격/수비 스타일 쏠림 방지 페널티
+            const atkCounts = teams.map(t => t.filter(p => p.style === '공격적').length);
+            const defCounts = teams.map(t => t.filter(p => p.style === '수비적').length);
+            cost += (Math.max(...atkCounts) - Math.min(...atkCounts)) * 15;
+            cost += (Math.max(...defCounts) - Math.min(...defCounts)) * 15;
 
-            // 2. 히스토리 중복 페널티 (2회 이상 시 극단적 회피)
+            // 3. 2회 이상 같은 편 중복 초고강도 회피
             for (let t of teams) {
                 for (let i = 0; i < t.length; i++) {
                     for (let j = i + 1; j < t.length; j++) {
@@ -347,13 +610,18 @@
         container.innerHTML = teams.map((team, idx) => {
             const avgOVR = (team.reduce((sum, p) => sum + parseFloat(calcOVR(p.stats)), 0) / team.length).toFixed(1);
             return `
-                <div class="team-box">
+                <div class="team-block">
                     <div class="team-title">
                         <span>팀 ${String.fromCharCode(65 + idx)} (${team.length}명)</span>
-                        <span style="color:var(--accent);">팀 평균 OVR: ${avgOVR}</span>
+                        <span style="color:var(--accent);">평균 OVR: ${avgOVR}</span>
                     </div>
                     <div class="team-members">
-                        ${team.map(p => `<span class="member-badge">${p.name} [${p.pos}/OVR${calcOVR(p.stats)}]</span>`).join('')}
+                        ${team.map(p => `
+                            <span class="member-badge">
+                                <b>${p.name}</b>
+                                <span class="style-tag style-${p.style}" style="font-size:0.65rem; padding:1px 3px;">${p.style}</span>
+                            </span>
+                        `).join('')}
                     </div>
                 </div>
             `;
@@ -364,7 +632,7 @@
 
     function confirmMatch() {
         if (!currentGeneratedTeams.length) return;
-        if (!confirm('이 편성을 확정하고 같은 팀 횟수를 누적 저장하시겠습니까?')) return;
+        if (!confirm('현재 팀 구성을 확정하시겠습니까? (같은 팀 이력이 누적됩니다)')) return;
 
         currentGeneratedTeams.forEach(team => {
             for (let i = 0; i < team.length; i++) {
@@ -375,7 +643,7 @@
         });
 
         saveHistory();
-        alert('매치 기록이 반영되었습니다! 다음 매칭 시 2회 이상 같은 팀이 되지 않도록 우선 배제됩니다.');
+        alert('매치 기록이 반영되었습니다! 다음 매칭 시 2회 이상 같은 팀이 되지 않도록 자동 회피됩니다.');
     }
 
     function copyResult() {
@@ -384,7 +652,7 @@
         currentGeneratedTeams.forEach((team, idx) => {
             const avgOVR = (team.reduce((sum, p) => sum + parseFloat(calcOVR(p.stats)), 0) / team.length).toFixed(1);
             text += `[ 팀 ${String.fromCharCode(65 + idx)} ] (평균 OVR: ${avgOVR})\n`;
-            text += team.map(p => `${p.name}(${p.pos}/OVR ${calcOVR(p.stats)})`).join(', ') + '\n\n';
+            text += team.map(p => `${p.name}(${p.style})`).join(', ') + '\n\n';
         });
 
         navigator.clipboard.writeText(text).then(() => {
@@ -393,7 +661,7 @@
     }
 
     function resetHistory() {
-        if (confirm('모든 이전 매칭 기록(누적 횟수)을 초기화하시겠습니까?')) {
+        if (confirm('모든 과거 매칭 히스토리를 초기화하시겠습니까?')) {
             historyMatrix = {};
             saveHistory();
             alert('히스토리가 초기화되었습니다.');
@@ -401,7 +669,7 @@
     }
 
     if (players.length === 0) {
-        loadFMDefault21();
+        loadDefault21();
     } else {
         renderRoster();
         renderAttendance();
