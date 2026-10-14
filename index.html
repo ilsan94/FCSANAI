@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FC사나이 팀선택</title>
+    <title>FC사나이 풋살 매치 밸런서</title>
     <style>
         :root {
-            --bg-deep: #090d16;
-            --bg-card: #131b2e;
-            --bg-item: #1c273e;
-            --bg-input: #23314e;
-            --border: rgba(255, 255, 255, 0.08);
+            --bg-body: #0b0f17;
+            --bg-card: #151d2a;
+            --bg-item: #1d2738;
+            --bg-input: #263349;
+            --border: #2d3b52;
             --primary: #38bdf8;
             --accent: #f59e0b;
             --danger: #ef4444;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-sub: #94a3b8;
         }
 
@@ -22,12 +22,13 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", Roboto, sans-serif;
-            letter-spacing: -0.02em;
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            letter-spacing: normal !important;
+            word-break: keep-all;
         }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-body);
             color: var(--text-main);
             padding: 14px;
             display: flex;
@@ -37,7 +38,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 580px;
+            max-width: 540px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -51,28 +52,27 @@
             padding: 6px 0;
         }
 
-        /* 탭 버튼 */
+        /* 상단 탭 */
         .tabs {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 11px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             color: var(--text-sub);
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.85rem;
-            transition: all 0.2s;
+            font-size: 0.88rem;
         }
 
         .tab-btn.active {
             background: var(--primary);
-            color: #040914;
+            color: #0b0f17;
             border-color: var(--primary);
         }
 
@@ -82,23 +82,22 @@
             border-radius: 12px;
             padding: 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
 
         .card-header {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: var(--primary);
         }
 
-        /* 참석자 리스트 */
+        /* 참석자 그리드 */
         .attendance-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
             gap: 6px;
         }
 
@@ -113,27 +112,27 @@
             user-select: none;
             font-size: 0.82rem;
             border: 1px solid transparent;
-            transition: all 0.15s;
         }
 
         .attendance-item.checked {
-            background: rgba(56, 189, 248, 0.15);
+            background: rgba(56, 189, 248, 0.12);
             border-color: var(--primary);
             color: #ffffff;
         }
 
         .style-tag {
-            font-size: 0.7rem;
-            padding: 2px 5px;
+            font-size: 0.68rem;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-weight: 600;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .style-공격적 { color: #f87171; background: rgba(239, 68, 68, 0.15); }
-        .style-밸런스 { color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
-        .style-수비적 { color: #4ade80; background: rgba(34, 197, 94, 0.15); }
+        .style-공격적 { color: #f87171; background: rgba(239, 68, 68, 0.2); }
+        .style-밸런스 { color: #38bdf8; background: rgba(56, 189, 248, 0.2); }
+        .style-수비적 { color: #4ade80; background: rgba(34, 197, 94, 0.2); }
 
-        /* 로스터 리스트 (폰트 벌어짐 방지) */
+        /* 등록된 선수 로스터 (폰트 왜곡 방지 세팅) */
         .roster-grid {
             display: flex;
             flex-direction: column;
@@ -143,10 +142,10 @@
         .roster-item {
             background: var(--bg-item);
             border-radius: 8px;
-            padding: 10px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             border: 1px solid var(--border);
         }
 
@@ -159,43 +158,46 @@
         .roster-name-box {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.88rem;
+            gap: 8px;
+            font-size: 0.9rem;
             font-weight: 700;
         }
 
         .ovr-pill {
             background: var(--accent);
-            color: #050811;
+            color: #0b0f17;
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.72rem;
             font-weight: 800;
         }
 
+        /* 5개 능력치 수치 폰트 안정화 */
         .stat-columns {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
+            gap: 5px;
             text-align: center;
-            font-size: 0.72rem;
         }
 
         .stat-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
-            padding: 3px 0;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 5px;
+            padding: 4px 2px;
             color: var(--text-sub);
+            font-size: 0.72rem;
+            line-height: 1.2;
         }
 
         .stat-box b {
             display: block;
             color: var(--primary);
-            font-size: 0.78rem;
-            margin-top: 1px;
+            font-size: 0.85rem;
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
         }
 
-        /* 폼 요소 */
+        /* 입력 폼 */
         .input-group {
             display: flex;
             gap: 6px;
@@ -206,7 +208,7 @@
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 8px 10px;
+            padding: 9px 10px;
             border-radius: 6px;
             font-size: 0.85rem;
             outline: none;
@@ -220,14 +222,14 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .stat-input-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 4px;
             font-size: 0.72rem;
             color: var(--text-sub);
         }
@@ -236,20 +238,19 @@
             width: 100%;
             text-align: center;
             padding: 6px 0;
+            font-variant-numeric: tabular-nums;
         }
 
-        /* 버튼 */
         .action-btn {
             background: var(--primary);
-            color: #040914;
+            color: #0b0f17;
             border: none;
-            padding: 10px;
+            padding: 11px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            font-size: 0.9rem;
-            transition: opacity 0.15s;
+            font-size: 0.92rem;
         }
 
         .action-btn:active {
@@ -260,14 +261,14 @@
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-sub);
-            padding: 4px 8px;
+            padding: 5px 9px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.75rem;
             line-height: 1.2;
         }
 
-        /* 매치 결과 렌더 */
+        /* 결과 화면 */
         .match-teams {
             display: flex;
             flex-direction: column;
@@ -276,10 +277,10 @@
         }
 
         .team-block {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.25);
             border-radius: 8px;
-            padding: 10px;
-            border-left: 3px solid var(--primary);
+            padding: 12px;
+            border-left: 4px solid var(--primary);
             border-top: 1px solid var(--border);
             border-right: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
@@ -288,7 +289,7 @@
         .team-title {
             display: flex;
             justify-content: space-between;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 700;
             margin-bottom: 8px;
         }
@@ -302,19 +303,19 @@
         .member-badge {
             background: var(--bg-item);
             border: 1px solid var(--border);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.78rem;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <h1>FC사나이 팀선택</h1>
+    <h1>⚽ FC사나이 풋살 매치 밸런서</h1>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('match')">매치 편성</button>
@@ -338,8 +339,8 @@
             <div class="card-header">
                 <span>2. 매치 설정</span>
             </div>
-            <div style="display:flex; gap:8px; align-items:center; margin-bottom: 10px;">
-                <label style="font-size: 0.82rem; color: var(--text-sub);">팀 분할:</label>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom: 12px;">
+                <label style="font-size: 0.85rem; color: var(--text-sub);">팀 분할:</label>
                 <select id="team-count" style="flex:1;">
                     <option value="2">2개 팀 (12인 매치)</option>
                     <option value="3">3개 팀 (18인 매치)</option>
@@ -395,8 +396,8 @@
 </div>
 
 <script>
-    const STORAGE_KEY_PLAYERS = 'fcsanai_futsal_players_v2';
-    const STORAGE_KEY_HISTORY = 'fcsanai_team_history_v2';
+    const STORAGE_KEY_PLAYERS = 'fcsanai_futsal_players_v3';
+    const STORAGE_KEY_HISTORY = 'fcsanai_team_history_v3';
 
     let players = JSON.parse(localStorage.getItem(STORAGE_KEY_PLAYERS)) || [];
     let historyMatrix = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || {};
@@ -547,7 +548,6 @@
         historyMatrix[key] = (historyMatrix[key] || 0) + 1;
     }
 
-    // 밸런스 매칭 (OVR 차이 최소화 + 스타일 균등 분배 + 2회 이상 중복 배제)
     function generateTeams() {
         const attendees = players.filter(p => p.checked);
         const k = parseInt(document.getElementById('team-count').value);
@@ -568,20 +568,17 @@
 
             let cost = 0;
 
-            // 1. OVR 균형 페널티
             const teamOVRs = teams.map(t => {
                 const total = t.reduce((sum, p) => sum + parseFloat(calcOVR(p.stats)), 0);
                 return total / t.length;
             });
             cost += (Math.max(...teamOVRs) - Math.min(...teamOVRs)) * 50;
 
-            // 2. 공격/수비 스타일 쏠림 방지 페널티
             const atkCounts = teams.map(t => t.filter(p => p.style === '공격적').length);
             const defCounts = teams.map(t => t.filter(p => p.style === '수비적').length);
             cost += (Math.max(...atkCounts) - Math.min(...atkCounts)) * 15;
             cost += (Math.max(...defCounts) - Math.min(...defCounts)) * 15;
 
-            // 3. 2회 이상 같은 편 중복 초고강도 회피
             for (let t of teams) {
                 for (let i = 0; i < t.length; i++) {
                     for (let j = i + 1; j < t.length; j++) {
